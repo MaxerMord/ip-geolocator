@@ -9,6 +9,8 @@ import com.google.gson.Gson;
 import com.google.common.net.UrlEscapers;
 
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class for obtaining geolocation information about an IP address or host
@@ -16,6 +18,10 @@ import org.apache.commons.io.IOUtils;
  * service.
  */
 public class GeoLocator {
+    /*
+    sl4j constructor
+     */
+    private static Logger logger = LoggerFactory.getLogger(GeoLocator.class);
 
     /**
      * URI of the geolocation service.
@@ -36,6 +42,7 @@ public class GeoLocator {
      * @throws IOException if any I/O error occurs
      */
     public GeoLocation getGeoLocation() throws IOException {
+        logger.info("getGeoLocation");
         return getGeoLocation(null);
     }
 
@@ -52,20 +59,28 @@ public class GeoLocator {
         URL url;
         if (ipAddrOrHost != null) {
             ipAddrOrHost = UrlEscapers.urlPathSegmentEscaper().escape(ipAddrOrHost);
+            logger.info(ipAddrOrHost);
             url = new URL(GEOLOCATOR_SERVICE_URI + ipAddrOrHost);
+            logger.info(GEOLOCATOR_SERVICE_URI);
         } else {
+            logger.warn(ipAddrOrHost);
             url = new URL(GEOLOCATOR_SERVICE_URI);
+            logger.debug(GEOLOCATOR_SERVICE_URI);
         }
         String s = IOUtils.toString(url, "UTF-8");
+        logger.info(s);
         return GSON.fromJson(s, GeoLocation.class);
     }
 
     public static void main(String[] args) throws IOException {
         try {
             String arg = args.length > 0 ? args[0] : null;
+            logger.debug(arg);
+            logger.info(arg);
             System.out.println(new GeoLocator().getGeoLocation(arg));
         } catch (IOException e) {
             System.err.println(e.getMessage());
+            logger.error(e.getMessage());
         }
     }
 
