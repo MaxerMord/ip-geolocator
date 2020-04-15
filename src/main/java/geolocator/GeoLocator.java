@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
  * service.
  */
 public class GeoLocator {
-    /*
+    /**
     sl4j constructor
      */
     private static Logger logger = LoggerFactory.getLogger(GeoLocator.class);
@@ -59,34 +59,47 @@ public class GeoLocator {
         URL url;
         if (ipAddrOrHost != null) {
             ipAddrOrHost = UrlEscapers.urlPathSegmentEscaper().escape(ipAddrOrHost);
-            logger.debug(ipAddrOrHost);
+            logger.info("Ip adrress or host: {}", ipAddrOrHost);
+            //logger.debug(ipAddrOrHost);
             url = new URL(GEOLOCATOR_SERVICE_URI + ipAddrOrHost);
-            logger.info(GEOLOCATOR_SERVICE_URI);
+            //logger.info(GEOLOCATOR_SERVICE_URI);
+            logger.info("Downloading geolocation data from: {}", url);
+            logger.info("Getting GEOLOCATOR_SERVICE_URI: ", GEOLOCATOR_SERVICE_URI);
         } else {
-            logger.warn(ipAddrOrHost);
+            //logger.warn(ipAddrOrHost);
+            logger.warn("IP address or host: {}", ipAddrOrHost);
             url = new URL(GEOLOCATOR_SERVICE_URI);
-            logger.info(GEOLOCATOR_SERVICE_URI);
+            //logger.info(GEOLOCATOR_SERVICE_URI);
+            logger.info("Getting GEOLOCATOR_SERVICE_URI: {}", GEOLOCATOR_SERVICE_URI);
+            logger.debug("Debugging: GEOLOCATOR_SERVICE_URI...{}", GEOLOCATOR_SERVICE_URI);
         }
         String s = IOUtils.toString(url, "UTF-8");
-        logger.info(s);
+        //logger.info(s);
         //logger.info(GEOLOCATOR_SERVICE_URI);
         //logger.info(ipAddrOrHost);
-        logger.debug(s);
+        //logger.debug(s);
         //logger.debug(ipAddrOrHost);
         //logger.debug(GEOLOCATOR_SERVICE_URI);
-        logger.warn(s);
+        //logger.warn(s);
+        logger.info("JSON data obtained from the geolocation service: {}", s);
         return GSON.fromJson(s, GeoLocation.class);
     }
 
     public static void main(String[] args) throws IOException {
         try {
             String arg = args.length > 0 ? args[0] : null;
-            logger.info(arg);
+            logger.info("args: {}", arg);
             System.out.println(new GeoLocator().getGeoLocation(arg));
-            logger.debug(arg);
+            logger.debug("Debugging arg: {}",arg);
         } catch (IOException e) {
             System.err.println(e.getMessage());
             logger.error(e.getMessage());
+            logger.error("ERROR: {}", e.getMessage());
+            /**
+             * some tests for understand parameters and logger's methods
+             */
+            logger.info("testing args for info: {}", args);
+            logger.debug("test args for debug: {}", args);
         }
     }
 
